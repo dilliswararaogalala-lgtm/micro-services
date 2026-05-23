@@ -15,6 +15,22 @@ services:
 
     deploy:
       replicas: 1
+  bookings:
+    build:
+      context: ./booking
+      dockerfile: Dockerfile
+
+    environment:
+      MONGO_URL: mongodb://mongo:27017/hotel-app
+
+    depends_on:
+      - mongo
+
+    expose:
+      - "3002"
+
+    deploy:
+      replicas: 1
 
   users:
     build:
@@ -45,6 +61,7 @@ services:
     depends_on:
       - search
       - users
+      - bookings
 
   mongo:
     image: mongo:latest
