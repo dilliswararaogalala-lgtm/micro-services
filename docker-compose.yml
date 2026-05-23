@@ -6,15 +6,15 @@ services:
 
     environment:
       MONGO_URL: mongodb://mongo:27017/hotel-app
+      REDIS_URL: redis://redis:6379
 
     depends_on:
       - mongo
+      - redis
 
     expose:
       - "3001"
 
-    deploy:
-      replicas: 1
   bookings:
     build:
       context: ./booking
@@ -22,15 +22,14 @@ services:
 
     environment:
       MONGO_URL: mongodb://mongo:27017/hotel-app
+      REDIS_URL: redis://redis:6379
 
     depends_on:
       - mongo
+      - redis
 
     expose:
       - "3002"
-
-    deploy:
-      replicas: 1
 
   users:
     build:
@@ -46,8 +45,19 @@ services:
     expose:
       - "3000"
 
-    deploy:
-      replicas: 1
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+
+    environment:
+      MONGO_URL: mongodb://mongo:27017/hotel-app
+      REDIS_URL: redis://redis:6379
+
+    depends_on:
+      - mongo
+      - redis
+      - bookings
 
   nginx:
     image: nginx:latest
@@ -66,12 +76,16 @@ services:
   mongo:
     image: mongo:latest
     container_name: hotel-app-mongodb
-    ports:
-      - "27017:27017"
+
 
     volumes:
       - mongo_data:/data/db
       - ./init_hotels.sh:/docker-entrypoint-initdb.d/init_hotels.sh:ro
+
+  redis:
+    image: redis:latest
+    container_name: hotel-app-redis
+
 
 volumes:
   mongo_data:
