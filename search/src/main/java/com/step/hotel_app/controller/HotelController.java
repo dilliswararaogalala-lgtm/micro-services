@@ -22,6 +22,7 @@ public class HotelController {
 
     @GetMapping("/search/hotels")
     public List<HotelView> searchHotels(@RequestParam String city){
-       return hotelService.searchHotels(city);
+
+        return hotelService.searchHotels(city);
     }
 }

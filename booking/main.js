@@ -3,6 +3,8 @@ import { MongoClient } from "mongodb";
 import {createClient} from "redis"
 
 const main = async() => {
+  console.log(Deno.env.get("MONGO_URL"));
+  console.log(Deno.env.get("REDIS_URL"));
   const mongoClient = new MongoClient("mongodb://mongo:27017/hotel-app");
   const redis = createClient({
   url: "redis://redis:6379",

@@ -3,6 +3,7 @@ package com.step.hotel_app.service;
 import com.step.hotel_app.models.Hotel;
 import com.step.hotel_app.repository.HotelRepository;
 import com.step.hotel_app.views.HotelView;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +16,13 @@ public class HotelService {
         this.hotelRepository = hotelRepository;
     }
 
+    @Cacheable(value = "hotelSearch", key = "#cityName")
     public List<HotelView> searchHotels(String cityName){
-        System.out.println(cityName);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         List<Hotel> hotels = hotelRepository.findHotelByCityName(cityName);
         System.out.println(hotels);
         return hotels
@@ -25,3 +31,5 @@ public class HotelService {
                 .toList();
     }
 }
+
+
